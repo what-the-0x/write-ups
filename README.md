@@ -1,2 +1,1 @@
-# write-ups
-Repository for write-ups of several CTFs
+- [RTFM sigsegv challenge qualifiers](./2018-RTFM-sigsegv-quals/README.md)
