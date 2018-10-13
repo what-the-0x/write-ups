@@ -1,1 +1,1 @@
-- [RTFM sigsegv challenge qualifiers](./2018-RTFM-sigsegv-quals/README.md)
+- [RTFM sigsegv challenge qualifiers](./2018-RTFM-sigsegv-quals)

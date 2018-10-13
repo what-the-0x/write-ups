@@ -1,8 +1,9 @@
 ## RTFM Challenge Qualifiers ##
 
-# Local replica of the challenge
+#### Note: Réplique locale du challenge ####
 
-A php server will run in a docker container simply by running the command
+Joint à ce write-up se trouve un script docker pour lancer un serveur php "équivalent" à celui du challenge.
+Pour le lancer, il suffit de:
 ```sh
 $ ./run_server.sh
 Sending build context to Docker daemon 9.728 kB
@@ -13,7 +14,9 @@ PHP 5.6.38-0+deb8u1 Development Server started at Fri Oct 12 23:07:37 2018
 Listening on http://localhost:8080
 Document root is /challenge
 Press Ctrl-C to quit.
-
+```
+L'on peut désormais tester le challenge sur `http://localhost:8080`
+```sh
 # Browse to http://localhost:8080/
 $ curl http://localhost:8080/
 <html>
@@ -29,7 +32,7 @@ $ curl http://localhost:8080/
 ```
 
 # Solution (FR)
-Ce challenge auto-proclamé "simple" a été un des plus difficiles pour moi.
+Ce challenge auto-proclamé "simple" a été l'un des plus difficiles pour moi.
 En effet, il s'agissait initialement d'un étape de _guessing_ qu'il fallait réussir pour continuer.
 
 ## 1 - Le guessing
@@ -120,11 +123,9 @@ Tiens tiens, PHP comprend la notation scientifique (le fameux E dans les calcula
 (Cette idée de la notation scientifique pour la loose equality est facilement trouvable sur le net, même si étonnamment mal présentée la plupart des fois)
 Du coup, si on a une chaîne de la forme `0e456123...454654`, qu'importe le nombre décimal situé après le 0, le résultat restera 0: `0 * (10 ^ n) == 0 quel que soit n`.
 
-Pour que le hash soit casté en tant que nombre, il faut qu'il soit de la forme
-
 ### Exploitation de la faille
-Du coup les contraintes sur notre hash se sont *beaucoup* relâchées: il suffit qu'il commence par `0e` et qu'ensuite il n'y ait pas de lettres héxa.
-Donc grosso modo nous sommes passés d'avoir une chance sur `2 ^ 128` de tomber pile sur un hash nul à une chance sur `2 ^ 8 * (1.6 ^ 30)`:
+Du coup les contraintes sur notre hash se sont relâchées *beaucoup*: il suffit qu'il commence par `0e` et qu'ensuite il n'y ait pas de lettres héxa.
+Donc grosso modo nous sommes passés d'avoir une chance sur `2 ^ 128` de tomber pile sur un hash nul à une chance sur `2 ^ 8 * ((16/10) ^ 30)`:
 ```python
 print 2 ** 128
 # > 340282366920938463463374607431768211456L
