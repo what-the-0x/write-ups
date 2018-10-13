@@ -1,6 +1,6 @@
 FROM debian:jessie-slim
 
-RUN apt-get update -y && apt-get install -y nano build-essential python2.7 ipython python-pip
+RUN apt-get update -y # && apt-get install -y nano build-essential python2.7 ipython python-pip
 
 RUN useradd -m challenger
 
