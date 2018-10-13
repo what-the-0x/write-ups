@@ -33,7 +33,7 @@ $ curl http://localhost:8080/
 </html>
 ```
 
-# Solution (FR)
+# Solution
 Ce challenge auto-proclamé "simple" a été l'un des plus difficiles pour moi.
 En effet, il s'agissait initialement d'un étape de _guessing_ qu'il fallait réussir pour continuer.
 
@@ -74,7 +74,7 @@ Session completed
 ```
 Ainsi le mdp est `passw0rd`. On en extrait un fichier `index.php` qui contient donc du code PHP intéressant
 
-## La faile PHP de `index.php`
+## 3 - La faile PHP de `index.php`
 ### PHP c'est la *loose*
 Voici le contenu du fichier `index.php`:
 ```php
@@ -125,7 +125,7 @@ Tiens tiens, PHP comprend la notation scientifique (le fameux E dans les calcula
 (Cette idée de la notation scientifique pour la loose equality est facilement trouvable sur le net, même si étonnamment mal présentée la plupart des fois)
 Du coup, si on a une chaîne de la forme `0e456123...454654`, qu'importe le nombre décimal situé après le 0, le résultat restera 0: `0 * (10 ^ n) == 0 quel que soit n`.
 
-### Exploitation de la faille
+### 3.1 Exploitation de la faille
 Du coup les contraintes sur notre hash se sont relâchées *beaucoup*: il suffit qu'il commence par `0e` et qu'ensuite il n'y ait pas de lettres héxa.
 Donc grosso modo nous sommes passés d'avoir une chance sur `2 ^ 128` de tomber pile sur un hash nul à une chance sur `2 ^ 8 * ((16/10) ^ 30)`:
 ```python
@@ -243,7 +243,7 @@ sys	0m0.744s
 ```
 
 
-## Vérifier la solution
+### 3.2 Vérifier la solution
 ```sh
 $ curl -X POST -d 'h1=202900081' http://localhost:8080
 <html>
