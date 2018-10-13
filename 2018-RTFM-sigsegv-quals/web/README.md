@@ -1,5 +1,7 @@
 ## RTFM Challenge Qualifiers ##
 
+# Challenge Web - Simple #
+
 #### Note: Réplique locale du challenge ####
 
 Joint à ce write-up se trouve un script docker pour lancer un serveur php "équivalent" à celui du challenge.
